@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 class ApiService {
   static const String baseUrl =
-      "http://3.111.36.147:8000";
+      "http://3.229.146.59:8000";
 
   Future<Map<String, dynamic>> dashboard() async {
     final response = await http.get(

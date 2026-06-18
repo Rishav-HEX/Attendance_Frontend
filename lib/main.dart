@@ -7,6 +7,7 @@ import 'screens/attendance_screen.dart';
 import 'screens/student_profile_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/student_login_screen.dart';
+import 'screens/forgot_password_screen.dart';
 
 void main() {
   runApp(
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
 
 routes: {
   '/': (context) => const LoginScreen(),
+  '/forgot-password': (context) => const ForgotPasswordScreen(),
 
   '/teacher-dashboard': (context) =>
       const DashboardScreen(),
@@ -45,9 +47,9 @@ routes: {
 
   '/student-profile': (context) =>
       const StudentProfileScreen(),
-    
-    '/student-login': (context) =>
-    const StudentLoginScreen(),
+
+  '/student-login': (context) =>
+      const StudentLoginScreen(),
 },
     );
   }
