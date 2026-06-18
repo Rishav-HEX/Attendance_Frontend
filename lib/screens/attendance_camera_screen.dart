@@ -27,11 +27,10 @@ class _AttendanceCameraScreenState
 
   Timer? recognitionTimer;
 
-  String recognizedName =
-      "Waiting For Face...";
+List<dynamic> recognizedFaces = [];
 
-  String recognitionStatus =
-      "Camera Started";
+String recognitionStatus =
+    "Scanning Faces...";
 
   @override
   void initState() {
@@ -76,7 +75,7 @@ class _AttendanceCameraScreenState
         Timer.periodic(
 
       const Duration(
-        seconds: 2,
+        milliseconds: 500,
       ),
 
       (timer) {
@@ -110,6 +109,11 @@ Future<void> recognizeFace() async {
     );
 
     print(result);
+    print(
+ _cameraController!
+   .value
+   .previewSize
+);
 
     if (!mounted) return;
 
@@ -120,24 +124,23 @@ Future<void> recognizeFace() async {
       final student =
           result["recognized"][0];
 
-      setState(() {
+setState(() {
 
-        recognizedName =
-            student["name"];
+  recognizedFaces =
+      result["recognized"];
 
-        recognitionStatus =
-            "Attendance Marked ✅";
-      });
+  recognitionStatus =
+      "${recognizedFaces.length} Face(s) Detected";
+});
 
     } else {
 
       setState(() {
 
-        recognizedName =
-            "Unknown Face";
+        recognizedFaces = [];
 
         recognitionStatus =
-            "Face Not Registered";
+        "No Face Detected";
       });
     }
 
@@ -196,7 +199,67 @@ Future<void> recognizeFace() async {
                 CameraPreview(
                   _cameraController!,
                 ),
+                ...recognizedFaces.map((face) {
 
+  return Positioned(
+
+    left: face["x1"].toDouble(),
+
+    top: face["y1"].toDouble(),
+
+    child: Container(
+
+      width: (
+        face["x2"] - face["x1"]
+      ).toDouble(),
+
+      height: (
+        face["y2"] - face["y1"]
+      ).toDouble(),
+
+      decoration: BoxDecoration(
+
+        border: Border.all(
+          color: Colors.greenAccent,
+          width: 3,
+        ),
+
+        borderRadius:
+            BorderRadius.circular(12),
+      ),
+
+      child: Align(
+
+        alignment:
+            Alignment.topCenter,
+
+        child: Container(
+
+          padding:
+              const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 4,
+          ),
+
+          color: Colors.green,
+
+          child: Text(
+
+            face["name"],
+
+            style:
+                const TextStyle(
+              color: Colors.white,
+              fontWeight:
+                  FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+}).toList(),
                 Positioned(
 
                   top: 20,
@@ -226,22 +289,20 @@ Future<void> recognizeFace() async {
                       children: [
 
                         Text(
+  "${recognizedFaces.length}",
+  style: const TextStyle(
+    color: Colors.white,
+    fontSize: 32,
+    fontWeight: FontWeight.bold,
+  ),
+),
 
-                          recognizedName,
-
-                          textAlign:
-                              TextAlign.center,
-
-                          style:
-                              const TextStyle(
-                            color:
-                                Colors.white,
-                            fontSize: 22,
-                            fontWeight:
-                                FontWeight.bold,
-                          ),
-                        ),
-
+const Text(
+  "Faces Detected",
+  style: TextStyle(
+    color: Colors.white70,
+  ),
+),
                         const SizedBox(
                           height: 8,
                         ),
